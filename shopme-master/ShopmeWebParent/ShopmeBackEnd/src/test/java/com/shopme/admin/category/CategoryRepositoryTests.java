@@ -42,7 +42,7 @@ public class CategoryRepositoryTests {
 	
 	@Test
 	public void testGetCategory() {
-		Category category = repo.findById(2).get();
+		Category category = repo.findById(1).get();
 		System.out.println(category.getName());
 		
 		Set<Category> children = category.getChildren();

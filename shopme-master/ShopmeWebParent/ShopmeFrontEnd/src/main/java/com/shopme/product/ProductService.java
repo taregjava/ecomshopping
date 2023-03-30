@@ -1,11 +1,16 @@
 package com.shopme.product;
 
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
+import com.shopme.dto.ProductDTO;
+import com.shopme.mapper.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.shopme.common.entity.product.Product;
@@ -24,7 +29,14 @@ public class ProductService {
 		
 		return repo.listByCategory(categoryId, categoryIdMatch, pageable);
 	}
-	
+	public List<ProductDTO> listCategory(Integer categoryId) {
+
+		String categoryIdMatch = "-" + String.valueOf(categoryId) + "-";
+		List<ProductDTO> employeeBuilders= repo.listCategory(categoryId, categoryIdMatch).stream()
+				.map(ProductMapper::mapToProductBuilder)
+				.collect(Collectors.toList());
+		return employeeBuilders;
+	}
 	public Product getProduct(String alias) throws ProductNotFoundException {
 		Product product = repo.findByAlias(alias);
 		if (product == null) {
@@ -33,7 +45,18 @@ public class ProductService {
 		
 		return product;
 	}
-	
+
+
+
+	public List<ProductDTO> findAll(){
+		List<ProductDTO> employeeBuilders= repo.findAll()
+				.stream()
+				.map(ProductMapper::mapToProductBuilder)
+				.collect(Collectors.toList());
+
+		return employeeBuilders;
+
+	}
 	public Product getProduct(Integer id) throws ProductNotFoundException {
 		try {
 			Product product = repo.findById(id).get();
@@ -47,5 +70,30 @@ public class ProductService {
 		Pageable pageable = PageRequest.of(pageNum - 1, SEARCH_RESULTS_PER_PAGE);
 		return repo.search(keyword, pageable);
 		
+	}
+
+	public List<ProductDTO> findProductsWithPagination(int offset, int pageSize){
+		List<ProductDTO> employeeBuilders= repo.findAll(PageRequest.of(offset,pageSize))
+				.stream()
+				.map(ProductMapper::mapToProductBuilder)
+				.collect(Collectors.toList());
+
+		return employeeBuilders;
+	}
+	public List<ProductDTO> findProductsWithPaginationAndSorting(int offset, int pageSize,String field){
+		List<ProductDTO> employeeBuilders= repo.findAll(PageRequest.of(offset,pageSize, Sort.by(Sort.Direction.ASC,field)))
+				.stream()
+				.map(ProductMapper::mapToProductBuilder)
+				.collect(Collectors.toList());
+
+		return employeeBuilders;
+	}
+	public List<ProductDTO> findProductsWithSorting(String field){
+		List<ProductDTO> employeeBuilders= repo.findAll(Sort.by(Sort.Direction.ASC,field))
+				.stream()
+				.map(ProductMapper::mapToProductBuilder)
+				.collect(Collectors.toList());
+
+		return employeeBuilders;
 	}
 }
