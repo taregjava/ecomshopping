@@ -27,7 +27,7 @@ public class CartItemRepositoryTests {
 	@Test
 	public void testSaveItem() {
 		Integer customerId = 1;
-		Integer productId = 1;
+		Integer productId = 2;
 		
 		Customer customer = entityManager.find(Customer.class, customerId);
 		Product product = entityManager.find(Product.class, productId);
@@ -44,8 +44,8 @@ public class CartItemRepositoryTests {
 	
 	@Test
 	public void testSave2Items() {
-		Integer customerId = 10;
-		Integer productId = 10;
+		Integer customerId = 2;
+		Integer productId = 1;
 		
 		Customer customer = entityManager.find(Customer.class, customerId);
 		Product product = entityManager.find(Product.class, productId);

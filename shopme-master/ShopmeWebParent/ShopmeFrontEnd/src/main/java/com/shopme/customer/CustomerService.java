@@ -2,9 +2,19 @@ package com.shopme.customer;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.transaction.Transactional;
 
+import com.shopme.constant.EcommerceConstant;
+import com.shopme.dto.ApiResponse;
+import com.shopme.dto.CustomerDto;
+import com.shopme.dto.Domain;
+import com.shopme.dto.RequestWrapperDTO;
+import com.shopme.mapper.CustomerMapper;
+import com.shopme.util.CommonUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -33,8 +43,19 @@ public class CustomerService {
 		Customer customer = customerRepo.findByEmail(email);
 		return customer == null;
 	}
-	
+	/*   CardDetailsEntity cardDetails = CardDetailsMapperUtils.mapToCardDetailsEntity(dto);
+
+                supplierRepository.saveAll(cardDetails.getSuppliers());
+
+                cardDetailsRepository.save(cardDetails);
+
+                if (ObjectUtils.isNotEmpty(cardDetails)) {
+                    return CommonRequestWrapperUtil.buildRequestWrapper(
+                            dto, CardDetailsConstants.CREDIT_CARD, CardDetailsMapperUtils.mapToCardDetailsBuilder(cardDetails),
+                            CardDetailsConstants.CREDIT_CARD, CommonUtils.getStatus(HttpStatus.OK));*/
 	public void registerCustomer(Customer customer) {
+
+
 		encodePassword(customer);
 		customer.setEnabled(false);
 		customer.setCreatedTime(new Date());
@@ -46,7 +67,36 @@ public class CustomerService {
 		customerRepo.save(customer);
 		
 	}
-	
+
+	public RequestWrapperDTO registerCustomerDto(CustomerDto dto) {
+
+		Customer customer = CustomerMapper.mapToCustomerEntity(dto);
+		encodePassword(customer);
+		customer.setEnabled(false);
+		customer.setCreatedTime(new Date());
+		customer.setAuthenticationType(AuthenticationType.DATABASE);
+		String randomCode = RandomString.make(64);
+		customer.setVerificationCode(randomCode);
+		customerRepo.save(customer);
+		if (ObjectUtils.isNotEmpty(customer)) {
+
+			/* return CommonRequestWrapperUtil.buildRequestWrapper(
+                            dto, CardDetailsConstants.CREDIT_CARD, CardDetailsMapperUtils.mapToCardDetailsBuilder(cardDetails),
+                            CardDetailsConstants.CREDIT_CARD, CommonUtils.getStatus(HttpStatus.OK));*/
+			/*return CommonUtils.mapToWrapper(dto,
+
+									 Domain.CUSTOMER.getDescription(),CustomerMapper.mapToCustomerBuilder(customer),
+							CommonUti)
+							.collect(Collectors.toList()));*/
+			return CommonUtils.mapToWrapper(
+                         CustomerMapper.mapToCustomerBuilder(customer),
+									String.format(EcommerceConstant.CREATE_SUCCESS, Domain.CUSTOMER.getDescription())
+							);
+		}else  throw new RuntimeException();
+			/*throw new MasterUncheckedBusinessException(
+					String.format(Error.ERROR_CREATE.getDescription(), Domain.CITY.getDescription()),
+					Error.ERROR_CREATE.getCode());*/
+	}
 	public Customer getCustomerByEmail(String email) {
 		return customerRepo.findByEmail(email);
 	}

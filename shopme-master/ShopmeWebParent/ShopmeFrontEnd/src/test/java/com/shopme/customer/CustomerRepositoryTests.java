@@ -32,10 +32,10 @@ public class CustomerRepositoryTests {
 		
 		Customer customer = new Customer();
 		customer.setCountry(country);
-		customer.setFirstName("David");
-		customer.setLastName("Fountaine");
-		customer.setPassword("password123");
-		customer.setEmail("david.s.fountaine@gmail.com");
+		customer.setFirstName("Tareg");
+		customer.setLastName("safi");
+		customer.setPassword("0912658511");
+		customer.setEmail("tareg.safi1990@gmail.com");
 		customer.setPhoneNumber("312-462-7518");
 		customer.setAddressLine1("1927  West Drive");
 		customer.setCity("Sacramento");

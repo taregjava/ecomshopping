@@ -18,8 +18,8 @@ public class OrderDetailRepositoryTests {
 	
 	@Test
 	public void testCountByProductAndCustomerAndOrderStatus() {
-		Integer productId = 106;
-		Integer customerId = 1;
+		Integer productId = 1;
+		Integer customerId = 2;
 		
 		Long count = repo.countByProductAndCustomerAndOrderStatus(productId, customerId, OrderStatus.DELIVERED);
 		assertThat(count).isGreaterThan(0);
